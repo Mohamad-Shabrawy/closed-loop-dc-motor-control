@@ -2,8 +2,9 @@
 
 An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (0–12,000 RPM), built on an **ESP32** microcontroller. Combines a feed-forward duty-cycle model, adaptive bias correction, and a PID controller — controllable both locally and remotely via the **Blynk** cloud platform.
 
-> **Course:** Electro-Mechanical Machines (POW2305) — Helwan National University, Robotics & Mechatronics Dept.  
-> **Team:** Youssef Ahmed Rady Elbeltagy · Mohamad Sherif Shabrawy
+> **Phase 1 Course:** Electro-Mechanical Machines (POW2305) — Helwan National University, Robotics & Mechatronics Dept.  
+> **Phase 2 Course:** Electrical Drives (POW2309)  
+> **Team:** Youssef Ahmed Rady Elbeltagy · Mohamad Sherif Shabrawy · Amr Sherif Maher *(joined Phase 2)*
 
 ---
 
@@ -145,7 +146,7 @@ char pass[] = "YOUR_WIFI_PASSWORD";
 
 ### 3. Flash to ESP32
 
-Open the `.cpp` file in Arduino IDE, select your ESP32 board and COM port, and upload.
+Open `src/Closed_Loop_Motor_Control.c` in Arduino IDE, select your ESP32 board and COM port, and upload.
 
 ### 4. Keypad Controls
 
@@ -153,7 +154,12 @@ Open the `.cpp` file in Arduino IDE, select your ESP32 board and COM port, and u
 |---|---|
 | `0`–`9` | Type target RPM digit by digit |
 | `#` | Confirm → select direction (1=FWD, 2=REV) → start motor |
-| `*` | Emergency stop / sync to potentiometer |
+| `*` | Emergency stop / reset / sync to potentiometer |
+| `A` *(Phase 2)* | Hold to ramp speed **up** in 10 RPM increments |
+| `B` *(Phase 2)* | Hold to ramp speed **down** in 10 RPM increments |
+| `C` *(Phase 2, motor stopped)* | Configure soft-stop deceleration time (1–5 s) |
+| `C` *(Phase 2, motor running)* | Toggle direction (safe stop-then-reverse) |
+| `D` *(Phase 2)* | Instant **emergency dynamic braking** (relay circuit) |
 
 ---
 
