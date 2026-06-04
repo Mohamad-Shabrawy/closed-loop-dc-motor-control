@@ -23,8 +23,8 @@ An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (
 
 | | Phase 1 | Phase 2 |
 |---|---|---|
-| **Focus** | Design, firmware & simulation | Physical build & hardware validation |
-| **Deliverable** | Full technical report | Assembled prototype + poster |
+| **Focus** | Full working system — firmware, control logic & physical build | Extended features & final presentation |
+| **Deliverable** | Complete C firmware + assembled hardware prototype | Additional features + project poster |
 | **Report** | [Phase 1 Report](docs/phase-1/Closed_Loop_DC_Motor_Report.pdf) | [Phase 2 Poster](docs/phase-2/Project_Poster.pdf) |
 
 ---
@@ -116,9 +116,9 @@ An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (
 
 ### 2. Configure Credentials
 
-Open `src/Closed_Loop_Motor_Control.cpp` and fill in your details:
+Open `src/Closed_Loop_Motor_Control.c` and fill in your details:
 
-```cpp
+```c
 #define BLYNK_TEMPLATE_ID   "YOUR_TEMPLATE_ID"
 #define BLYNK_TEMPLATE_NAME "YOUR_TEMPLATE_NAME"
 #define BLYNK_AUTH_TOKEN    "YOUR_BLYNK_AUTH_TOKEN"
@@ -170,7 +170,7 @@ u(t) = D_base + Kp·e(t) + Ki·∫e(t)dt + Kd·de(t)/dt
 ```
 closed-loop-dc-motor-control/
 ├── src/
-│   └── Closed_Loop_Motor_Control.cpp        # ESP32 firmware
+│   └── Closed_Loop_Motor_Control.c          # ESP32 firmware (C)
 ├── hardware/
 │   └── circuit_layout.dwg                   # AutoCAD electrical layout
 ├── docs/
