@@ -23,8 +23,9 @@ An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (
 
 | | Phase 1 | Phase 2 |
 |---|---|---|
-| **Focus** | Full working system — firmware, control logic & physical build | Extended features & final presentation |
-| **Deliverable** | Complete C firmware + assembled hardware prototype | Additional features + project poster |
+| **Focus** | Full working system — firmware, PID control, IoT & physical build | Extended safety features & final presentation |
+| **Deliverable** | Complete C firmware + assembled hardware prototype | Dynamic braking circuit, VL6180X sensor, 4×4 keypad upgrade + poster |
+| **New in Phase 2** | — | Relay-based dynamic braking, VL6180X obstacle detection, A/B speed ramp keys, C key soft-stop/direction toggle, D key emergency brake |
 | **Report** | [Phase 1 Report](docs/phase-1/Closed_Loop_DC_Motor_Report.pdf) | [Phase 2 Poster](docs/phase-2/Project_Poster.pdf) |
 
 ---
@@ -59,11 +60,17 @@ An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (
 | Control law | Feed-Forward + PID with adaptive bias |
 | Speed sensing | Quadrature encoder, 7 PPR × 4 = 28 CPR |
 | RPM smoothing | Moving average filter, N=12 circular buffer |
-| Input methods | Keypad, potentiometer, Blynk app |
+| Input methods | 4×4 keypad, potentiometer, Blynk app |
 | IoT platform | Blynk (Wi-Fi via ESP32) |
 | Local display | I2C LCD 16×2 + mirrored Blynk LCD widget |
 | Safety | Stall detection, overspeed protection, soft start/stop, safe direction change |
 | PWM | 20 kHz, 10-bit resolution (GPIO 23 via LEDC) |
+| **Dynamic braking** *(Phase 2)* | 2× SPDT relays + 3×1Ω/100W resistors in parallel (0.333Ω, 300W bank) — converts kinetic energy to heat for rapid stop |
+| **Emergency obstacle detection** *(Phase 2)* | VL6180X ToF sensor — auto-triggers dynamic braking when object detected within 80 mm (~80–120 ms response) |
+| **Speed ramping** *(Phase 2)* | A key = ramp up, B key = ramp down (10 RPM increments) |
+| **Configurable soft-stop** *(Phase 2)* | C key (motor stopped) = set deceleration time 1–5 s |
+| **Direction toggle** *(Phase 2)* | C key (motor running) = safe stop-then-reverse sequence |
+| **Emergency brake key** *(Phase 2)* | D key = instant relay-based dynamic braking |
 
 ---
 
@@ -76,9 +83,14 @@ An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (
 | Motor Driver | Cytron MD13S (13A continuous) |
 | Encoder | Quadrature, 7 PPR |
 | Display | I2C LCD 16×2 (address 0x27) |
-| Keypad | 4×3 matrix |
+| Keypad | 4×4 matrix (Phase 2 upgrade from 4×3) |
 | Power Supply | 12V, 15A |
 | Buck Converter | 12V → 5V for ESP32 |
+| **Relays** *(Phase 2)* | SONGLE SLC-12VDC-SL-C SPDT ×2 (12V coil, 30A contacts) |
+| **MOSFET drivers** *(Phase 2)* | IRLZ44N ×2 (60V, 50A, logic-level gate) |
+| **Braking resistors** *(Phase 2)* | RX24 1Ω/100W ×3 in parallel → 0.333Ω, 300W |
+| **Flyback diodes** *(Phase 2)* | 1N4007 ×2 across relay coils |
+| **Proximity sensor** *(Phase 2)* | VL6180X ToF via I2C (0–200 mm range) |
 
 **Pin Configuration:**
 
@@ -90,7 +102,11 @@ An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (
 | Encoder B | 33 |
 | Potentiometer | 36 (ADC) |
 | Keypad Rows | 19, 18, 5, 17 |
-| Keypad Cols | 2, 16, 4 |
+| Keypad Cols | 2, 16, 4, 15 |
+| Relay A (Phase 2) | 26 |
+| Relay B (Phase 2) | 27 |
+| VL6180X SDA (Phase 2) | 21 |
+| VL6180X SCL (Phase 2) | 22 |
 
 ---
 
