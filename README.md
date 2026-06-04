@@ -2,7 +2,30 @@
 
 An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (0–12,000 RPM), built on an **ESP32** microcontroller. Combines a feed-forward duty-cycle model, adaptive bias correction, and a PID controller — controllable both locally and remotely via the **Blynk** cloud platform.
 
-> **Course:** Electro-Mechanical Machines (POW2305) — Helwan National University, Robotics & Mechatronics Dept.
+> **Course:** Electro-Mechanical Machines (POW2305) — Helwan National University, Robotics & Mechatronics Dept.  
+> **Team:** Youssef Ahmed Rady Elbeltagy · Mohamad Sherif Shabrawy
+
+---
+
+## Physical Build
+
+| Hardware Overview | Top View |
+|:---:|:---:|
+| ![Hardware Overview](docs/phase-2/photos/hardware_overview.jpg) | ![Top View](docs/phase-2/photos/hardware_top_view.jpg) |
+
+| Team Photo | Team Photo |
+|:---:|:---:|
+| ![Team 1](docs/phase-2/photos/team_photo_1.jpg) | ![Team 2](docs/phase-2/photos/team_photo_2.jpg) |
+
+---
+
+## Project Phases
+
+| | Phase 1 | Phase 2 |
+|---|---|---|
+| **Focus** | Design, firmware & simulation | Physical build & hardware validation |
+| **Deliverable** | Full technical report | Assembled prototype + poster |
+| **Report** | [Phase 1 Report](docs/phase-1/Closed_Loop_DC_Motor_Report.pdf) | [Phase 2 Poster](docs/phase-2/Project_Poster.pdf) |
 
 ---
 
@@ -147,17 +170,15 @@ u(t) = D_base + Kp·e(t) + Ki·∫e(t)dt + Kd·de(t)/dt
 ```
 closed-loop-dc-motor-control/
 ├── src/
-│   └── Closed_Loop_Motor_Control.cpp   # ESP32 firmware
+│   └── Closed_Loop_Motor_Control.cpp        # ESP32 firmware
 ├── hardware/
-│   └── circuit_layout.dwg              # AutoCAD electrical layout
+│   └── circuit_layout.dwg                   # AutoCAD electrical layout
 ├── docs/
-│   └── Closed_Loop_DC_Motor_Report.pdf # Full project report
+│   ├── phase-1/
+│   │   └── Closed_Loop_DC_Motor_Report.pdf  # Phase 1 technical report
+│   └── phase-2/
+│       ├── Project_Poster.pdf               # Phase 2 poster/presentation
+│       └── photos/                          # Physical build photos
 ├── .gitignore
 └── README.md
 ```
-
----
-
-## Documentation
-
-Full design details, flowcharts, and experimental results are in [`docs/Closed_Loop_DC_Motor_Report.pdf`](docs/Closed_Loop_DC_Motor_Report.pdf).
