@@ -1,0 +1,163 @@
+# Closed-Loop DC Motor Speed Control (ESP32 + Blynk IoT)
+
+An IoT-enabled closed-loop speed control system for a **775 brushed DC motor** (0–12,000 RPM), built on an **ESP32** microcontroller. Combines a feed-forward duty-cycle model, adaptive bias correction, and a PID controller — controllable both locally and remotely via the **Blynk** cloud platform.
+
+> **Course:** Electro-Mechanical Machines (POW2305) — Helwan National University, Robotics & Mechatronics Dept.
+
+---
+
+## System Overview
+
+```
+[Keypad / Potentiometer / Blynk App]
+              ↓
+         ESP32 DevKit
+    ┌─────────────────────┐
+    │  Feed-Forward Map   │  ← Lookup table (40 RPM→Duty points)
+    │  + Adaptive Bias    │  ← Online learning correction
+    │  + PID Controller   │  ← Kp=0.02, Ki=0.00015, Kd=0.0006
+    └─────────────────────┘
+              ↓
+      Cytron MD13S Driver
+              ↓
+       775 DC Motor (12V)
+              ↓
+    Quadrature Encoder (28 CPR)
+              ↑ feedback
+```
+
+---
+
+## Features
+
+| Feature | Details |
+|---|---|
+| Speed range | 0 – 12,000 RPM |
+| Control law | Feed-Forward + PID with adaptive bias |
+| Speed sensing | Quadrature encoder, 7 PPR × 4 = 28 CPR |
+| RPM smoothing | Moving average filter, N=12 circular buffer |
+| Input methods | Keypad, potentiometer, Blynk app |
+| IoT platform | Blynk (Wi-Fi via ESP32) |
+| Local display | I2C LCD 16×2 + mirrored Blynk LCD widget |
+| Safety | Stall detection, overspeed protection, soft start/stop, safe direction change |
+| PWM | 20 kHz, 10-bit resolution (GPIO 23 via LEDC) |
+
+---
+
+## Hardware
+
+| Component | Spec |
+|---|---|
+| Microcontroller | ESP32 DevKit |
+| Motor | 775 Brushed DC, 12V, 7,000–12,000 RPM |
+| Motor Driver | Cytron MD13S (13A continuous) |
+| Encoder | Quadrature, 7 PPR |
+| Display | I2C LCD 16×2 (address 0x27) |
+| Keypad | 4×3 matrix |
+| Power Supply | 12V, 15A |
+| Buck Converter | 12V → 5V for ESP32 |
+
+**Pin Configuration:**
+
+| Signal | GPIO |
+|---|---|
+| PWM Output | 23 |
+| Direction | 25 |
+| Encoder A | 32 |
+| Encoder B | 33 |
+| Potentiometer | 36 (ADC) |
+| Keypad Rows | 19, 18, 5, 17 |
+| Keypad Cols | 2, 16, 4 |
+
+---
+
+## Blynk Virtual Pin Mapping
+
+| Pin | Role |
+|---|---|
+| V0 | Live RPM telemetry → graph |
+| V1 | Target RPM setpoint (read/write) |
+| V2 | Direction (0=Forward, 1=Reverse) |
+| V3 | Master Start/Stop switch |
+| V4 | Remote LCD widget |
+
+---
+
+## Getting Started
+
+### 1. Install Libraries (Arduino IDE)
+
+- `Blynk` (BlynkSimpleEsp32)
+- `LiquidCrystal_I2C`
+- `Keypad`
+
+### 2. Configure Credentials
+
+Open `src/Closed_Loop_Motor_Control.cpp` and fill in your details:
+
+```cpp
+#define BLYNK_TEMPLATE_ID   "YOUR_TEMPLATE_ID"
+#define BLYNK_TEMPLATE_NAME "YOUR_TEMPLATE_NAME"
+#define BLYNK_AUTH_TOKEN    "YOUR_BLYNK_AUTH_TOKEN"
+
+char ssid[] = "YOUR_WIFI_SSID";
+char pass[] = "YOUR_WIFI_PASSWORD";
+```
+
+### 3. Flash to ESP32
+
+Open the `.cpp` file in Arduino IDE, select your ESP32 board and COM port, and upload.
+
+### 4. Keypad Controls
+
+| Key | Action |
+|---|---|
+| `0`–`9` | Type target RPM digit by digit |
+| `#` | Confirm → select direction (1=FWD, 2=REV) → start motor |
+| `*` | Emergency stop / sync to potentiometer |
+
+---
+
+## Control Architecture
+
+### Feed-Forward + Adaptive Bias
+A lookup table of ~40 RPM→Duty operating points linearizes the nonlinear motor curve. Linear interpolation finds the base duty for any target RPM. An **online adaptive bias** term updates in real-time when steady-state error persists (10–500 RPM range), compensating for load changes and voltage drop.
+
+### PID Controller
+Runs at 150 ms intervals on top of the feed-forward output:
+
+```
+u(t) = D_base + Kp·e(t) + Ki·∫e(t)dt + Kd·de(t)/dt
+```
+
+- Derivative low-pass filter: α = 0.62
+- Integral windup clamp: ±12,000
+- Deadband: ±5 RPM (prevents chattering)
+
+### Safety Mechanisms
+- **Stall detection:** stops motor if RPM < 20% of target for > 2 s
+- **Overspeed protection:** halves duty if RPM > 130% of target for > 1 s
+- **Soft start/stop:** ramped duty changes over 30 steps
+- **Safe direction change:** direction only changes from full stop
+
+---
+
+## Project Structure
+
+```
+closed-loop-dc-motor-control/
+├── src/
+│   └── Closed_Loop_Motor_Control.cpp   # ESP32 firmware
+├── hardware/
+│   └── circuit_layout.dwg              # AutoCAD electrical layout
+├── docs/
+│   └── Closed_Loop_DC_Motor_Report.pdf # Full project report
+├── .gitignore
+└── README.md
+```
+
+---
+
+## Documentation
+
+Full design details, flowcharts, and experimental results are in [`docs/Closed_Loop_DC_Motor_Report.pdf`](docs/Closed_Loop_DC_Motor_Report.pdf).

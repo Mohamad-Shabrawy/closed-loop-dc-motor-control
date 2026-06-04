@@ -1,0 +1,15 @@
+# Arduino / ESP32
+*.elf
+*.bin
+*.hex
+build/
+.arduino15/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Credentials - never commit these
+secrets.h
+credentials.h
